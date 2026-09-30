@@ -1,0 +1,42 @@
+# Example configuration for run_pipeline.py-style runs.
+# Copy to pipeline_config.yaml and fill in your own repository details.
+
+repo:
+  local_path: "/path/to/local/clone"        # `git clone <url> <local_path>` first
+  owner: "apache"                            # GitHub owner/org (for ISSUE mining)
+  name: "some-library"                       # GitHub repo name (for ISSUE mining)
+  file_extensions: [".java"]
+
+releases:
+  # Git tag names, in chronological order. Each consecutive pair defines
+  # one expanding-window CV fold; the last release has no "future" release
+  # to derive labels from and is used for prediction only, not evaluation.
+  tags:
+    - "v1.0.0"
+    - "v1.1.0"
+    - "v1.2.0"
+    - "v1.3.0"
+    - "v1.4.0"
+
+pmd:
+  # PMD is invoked per release on a checked-out snapshot of the source tree.
+  # See README.md "Static metrics (PMD)" for the checkout-per-release loop.
+  ruleset: "category/java/bestpractices.xml,category/java/errorprone.xml,category/java/design.xml"
+
+coverage:
+  # Path template for JaCoCo XML reports, one per release, if available.
+  jacoco_xml_template: "data/external/jacoco/{release}/report.xml"
+
+preprocessing:
+  variance_threshold: 0.0001
+  correlation_threshold: 0.95
+
+clustering:
+  dbscan_eps: 1.5
+  dbscan_min_samples: 5
+  som_grid_size: 10
+
+model:
+  n_estimators: 300
+  class_weight: "balanced"
+  random_state: 42
